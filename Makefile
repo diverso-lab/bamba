@@ -1,4 +1,8 @@
-.PHONY: up up-d down build logs restart prod prod-ai prod-logs prod-down clean clean-all lock ai
+.PHONY: env up up-d down build logs restart prod prod-ai prod-logs prod-down clean clean-all lock ai
+
+env:           ## Crea .env desde .env.example con SECRET_KEY aleatoria (no sobreescribe)
+	@if [ -f .env ]; then echo ".env ya existe (no se toca)"; else \
+	  sed "s/^SECRET_KEY=.*/SECRET_KEY=$$(openssl rand -hex 32)/" .env.example > .env && echo ".env creado con SECRET_KEY aleatoria"; fi
 
 up:            ## Levanta el entorno de desarrollo (hot reload)
 	docker compose up --build

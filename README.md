@@ -22,9 +22,9 @@ Crea tu cuenta en la pantalla inicial. Cada usuario tiene sus propios diseños, 
 ### Desplegar en un servidor (detrás de tu proxy con dominio + SSL)
 
 ```bash
-git clone … bamba && cd bamba
-cp .env.example .env         # edita: COOKIE_SECURE=true, SECRET_KEY, BAMBA_PORT…
-make prod                    # escucha en 127.0.0.1:8080 (cámbialo con BAMBA_PORT / BAMBA_BIND)
+git clone git@github.com:diverso-lab/bamba.git && cd bamba
+make env                     # crea .env con SECRET_KEY aleatoria (COOKIE_SECURE=true ya viene puesto)
+make prod                    # escucha en 127.0.0.1:8080 (cámbialo con BAMBA_PORT / BAMBA_BIND en .env)
 ```
 
 En tu proxy inverso apunta el dominio a `http://127.0.0.1:8080` y asegúrate de:
