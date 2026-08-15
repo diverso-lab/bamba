@@ -8,9 +8,10 @@ services:
       context: ./frontend
       target: prod
     ports:
-      # Solo accesible desde la propia máquina; tu proxy inverso (dominio + SSL) reenvía aquí.
-      # Cambia BAMBA_BIND=0.0.0.0 si el proxy está en otra máquina.
-      - "${BAMBA_BIND:-127.0.0.1}:${BAMBA_PORT:-8080}:80"
+      # Puerto HTTP interno al que reenvía tu proxy inverso (dominio + SSL).
+      # Por defecto escucha en todas las interfaces (el proxy puede estar en otra máquina/host).
+      # Si proxy y bamba están en la misma máquina puedes restringirlo con BAMBA_BIND=127.0.0.1.
+      - "${BAMBA_BIND:-0.0.0.0}:${BAMBA_PORT:-8080}:80"
     depends_on:
       backend:
         condition: service_healthy

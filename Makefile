@@ -22,7 +22,7 @@ logs:
 restart:
 	docker compose restart
 
-prod:          ## Build de producción (nginx) en 127.0.0.1:8080 (configurable en .env)
+prod:          ## Build de producción (nginx) en 0.0.0.0:8080 (configurable en .env)
 	docker compose -f docker-compose.prod.yml up --build -d
 
 prod-ai:       ## Producción + IA de texto local (Ollama)

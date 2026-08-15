@@ -24,10 +24,10 @@ Crea tu cuenta en la pantalla inicial. Cada usuario tiene sus propios diseños, 
 ```bash
 git clone git@github.com:diverso-lab/bamba.git && cd bamba
 make env                     # crea .env con SECRET_KEY aleatoria (COOKIE_SECURE=true ya viene puesto)
-make prod                    # escucha en 127.0.0.1:8080 (cámbialo con BAMBA_PORT / BAMBA_BIND en .env)
+make prod                    # escucha en 0.0.0.0:8080 (cámbialo con BAMBA_PORT / BAMBA_BIND en .env)
 ```
 
-En tu proxy inverso apunta el dominio a `http://127.0.0.1:8080` y asegúrate de:
+En tu proxy inverso apunta el dominio a `http://<ip-de-la-máquina>:8080` (o `127.0.0.1:8080` si está en la misma) y asegúrate de:
 - **WebSocket**: reenviar las cabeceras `Upgrade`/`Connection` (colaboración en tiempo real, ruta `/api/ws/`).
 - **Tamaño de subida**: permitir cuerpos de al menos 80 MB (vídeos y fotos grandes; en nginx `client_max_body_size 80m;`).
 - **Timeouts**: lecturas de ≥300 s (quitar fondo y conversión de vídeo pueden tardar).
