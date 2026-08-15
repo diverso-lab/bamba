@@ -1,0 +1,63 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      target: dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - BACKEND_URL=http://backend:8000
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/app:/app/app
+      - rembg-models:/root/.u2net
+      - bamba-data:/data
+    environment:
+      - REMBG_DEFAULT_MODEL=isnet-general-use
+      - MAX_IMAGE_SIDE=3000
+      # Cuentas: registro abierto (pon "false" tras crear tu usuario si expones el servidor)
+      - ALLOW_REGISTRATION=${ALLOW_REGISTRATION:-true}
+      # Clave para firmar sesiones (si se omite se genera y guarda en el volumen /data)
+      - SECRET_KEY=${SECRET_KEY:-}
+      # Ponlo a "true" si sirves bamba por HTTPS
+      - COOKIE_SECURE=${COOKIE_SECURE:-false}
+      # IA: modelo local (perfil "ai") o cualquier API OpenAI-compatible
+      - OLLAMA_URL=http://ollama:11434
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen2.5:1.5b}
+      - OPENAI_BASE_URL=${OPENAI_BASE_URL:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4o-mini}
+      - AI_IMAGE_URL=${AI_IMAGE_URL:-}
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # IA de texto local (opcional): docker compose --profile ai up -d
+  ollama:
+    image: ollama/ollama:latest
+    profiles: ["ai"]
+    volumes:
+      - ollama-models:/root/.ollama
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        ollama serve &
+        sleep 4
+        ollama pull ${OLLAMA_MODEL:-qwen2.5:1.5b} || true
+        wait
+    restart: unless-stopped
+
+volumes:
+  rembg-models:
+  bamba-data:
+  ollama-models:

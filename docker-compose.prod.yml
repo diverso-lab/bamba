@@ -1,0 +1,68 @@
+# Producción: nginx sirve el frontend compilado y hace proxy de /api al backend.
+#   docker compose -f docker-compose.prod.yml up -d --build
+name: bamba-prod
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      target: prod
+    ports:
+      # Solo accesible desde la propia máquina; tu proxy inverso (dominio + SSL) reenvía aquí.
+      # Cambia BAMBA_BIND=0.0.0.0 si el proxy está en otra máquina.
+      - "${BAMBA_BIND:-127.0.0.1}:${BAMBA_PORT:-8080}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+  backend:
+    build: ./backend
+    volumes:
+      - rembg-models:/root/.u2net
+      - bamba-data:/data
+    environment:
+      - REMBG_DEFAULT_MODEL=isnet-general-use
+      - MAX_IMAGE_SIDE=3000
+      # Cuentas: registro abierto (pon "false" tras crear tu usuario si expones el servidor)
+      - ALLOW_REGISTRATION=${ALLOW_REGISTRATION:-true}
+      # Clave para firmar sesiones (si se omite se genera y guarda en el volumen /data)
+      - SECRET_KEY=${SECRET_KEY:-}
+      # Ponlo a "true" si sirves bamba por HTTPS
+      - COOKIE_SECURE=${COOKIE_SECURE:-false}
+      # IA: modelo local (perfil "ai") o cualquier API OpenAI-compatible
+      - OLLAMA_URL=http://ollama:11434
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen2.5:1.5b}
+      - OPENAI_BASE_URL=${OPENAI_BASE_URL:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4o-mini}
+      - AI_IMAGE_URL=${AI_IMAGE_URL:-}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/api/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  # IA de texto local (opcional): docker compose --profile ai up -d
+  ollama:
+    image: ollama/ollama:latest
+    profiles: ["ai"]
+    volumes:
+      - ollama-models:/root/.ollama
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        ollama serve &
+        sleep 4
+        ollama pull ${OLLAMA_MODEL:-qwen2.5:1.5b} || true
+        wait
+    restart: unless-stopped
+
+volumes:
+  rembg-models:
+  bamba-data:
+  ollama-models:

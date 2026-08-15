@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-50: #f5f3ff;
+  --color-brand-100: #ede9fe;
+  --color-brand-200: #ddd6fe;
+  --color-brand-300: #c4b5fd;
+  --color-brand-400: #a78bfa;
+  --color-brand-500: #8b5cf6;
+  --color-brand-600: #7c3aed;
+  --color-brand-700: #6d28d9;
+  --color-brand-800: #5b21b6;
+  --color-brand-900: #4c1d95;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+html, body, #root { height: 100%; }
+body { @apply bg-slate-100 text-slate-800 antialiased; font-family: var(--font-sans); overscroll-behavior: none; }
+
+* { scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent; }
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 8px; }
+*::-webkit-scrollbar-track { background: transparent; }
+
+@utility btn { @apply inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors select-none; }
+.btn-primary { @apply btn bg-brand-600 text-white hover:bg-brand-700 disabled:opacity-50 disabled:hover:bg-brand-600; }
+.btn-ghost { @apply btn text-slate-700 hover:bg-slate-200/70 disabled:opacity-40 disabled:hover:bg-transparent; }
+.btn-secondary { @apply btn bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 shadow-sm; }
+@utility icon-btn { @apply inline-flex items-center justify-center h-8 w-8 rounded-md text-slate-600 hover:bg-slate-200/70 hover:text-slate-900 transition-colors disabled:opacity-40 disabled:hover:bg-transparent; }
+.icon-btn.active { @apply bg-brand-100 text-brand-700; }
+@utility input { @apply rounded-md border border-slate-200 bg-white px-2 py-1 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-transparent; }
+.select { @apply input pr-6; }
+.panel-title { @apply text-xs font-semibold uppercase tracking-wide text-slate-500; }
+.side-tab { @apply flex flex-col items-center justify-center gap-1 h-16 w-full text-[11px] text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors; }
+.side-tab.active { @apply bg-white text-brand-700; }
+.card { @apply rounded-xl bg-white shadow-sm border border-slate-200; }
+.range { @apply w-full accent-[var(--color-brand-600)]; }
+.tooltip { @apply pointer-events-none absolute z-50 rounded bg-slate-900 px-2 py-1 text-xs text-white opacity-0 transition-opacity; }
+.divider { @apply w-px h-6 bg-slate-200 mx-1; }
+.checker { background-image: linear-gradient(45deg, #e5e7eb 25%, transparent 25%), linear-gradient(-45deg, #e5e7eb 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e5e7eb 75%), linear-gradient(-45deg, transparent 75%, #e5e7eb 75%); background-size: 16px 16px; background-position: 0 0, 0 8px, 8px -8px, -8px 0; }
+.canvas-container { margin: 0 auto; box-shadow: 0 8px 30px rgba(15, 23, 42, 0.18); }
+.kbd { @apply inline-block rounded border border-slate-300 bg-slate-50 px-1 text-[10px] font-mono text-slate-600; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@keyframes demoFade { 0%,15% { opacity: 0 } 60%,100% { opacity: 1 } }
+@keyframes demoRise { 0%,15% { opacity: 0; transform: translateY(8px) } 60%,100% { opacity: 1; transform: none } }
+@keyframes demoPan { 0%,15% { opacity: 0; transform: translateX(-10px) } 60%,100% { opacity: 1; transform: none } }
+@keyframes demoPop { 0%,15% { opacity: 0; transform: scale(.4) } 55% { transform: scale(1.15) } 70%,100% { opacity: 1; transform: scale(1) } }
+@keyframes demoZoom { 0%,15% { opacity: 0; transform: scale(1.5) } 60%,100% { opacity: 1; transform: scale(1) } }
+@keyframes demoWipe { 0%,15% { clip-path: inset(0 100% 0 0) } 60%,100% { clip-path: inset(0 0 0 0) } }
+@keyframes demoDrift { 0%,15% { opacity: 0; transform: translate(-4px,4px) } 70%,100% { opacity: 1; transform: none } }
+@keyframes demoTumble { 0%,15% { opacity: 0; transform: rotate(-25deg) translateY(6px) } 60%,100% { opacity: 1; transform: none } }
+@keyframes demoBlink { 0%,15%,35%,55% { opacity: .15 } 25%,45%,65%,100% { opacity: 1 } }
+@keyframes demoBounce { 0%,15% { transform: translateY(-14px) } 45% { transform: translateY(0) } 60% { transform: translateY(-5px) } 75%,100% { transform: translateY(0) } }
+.anim-demo { animation-duration: 2.4s; animation-iteration-count: infinite; animation-timing-function: ease-out; }
+.anim-fade { animation-name: demoFade } .anim-rise { animation-name: demoRise } .anim-pan { animation-name: demoPan } .anim-pop { animation-name: demoPop } .anim-zoom { animation-name: demoZoom } .anim-wipe { animation-name: demoWipe } .anim-drift { animation-name: demoDrift } .anim-tumble { animation-name: demoTumble } .anim-blink { animation-name: demoBlink } .anim-bounce { animation-name: demoBounce }
+.fade-in { animation: fadeIn .15s ease-out; }
